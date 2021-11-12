@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function cd {
+    builtin cd $1
+    ls
+}
+
+function mkcd {
+    mkdir $1
+    cd $1
+}
+
+function ebash {
+    nvim ~/bash_ext
+    source ~/.bashrc
+}
+
+alias e=nvim
+
+export VISUAL=nvim
+export EDITOR=nvim
