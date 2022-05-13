@@ -1,24 +1,18 @@
 call plug#begin(stdpath('data') . '/plugged')
 
 Plug 'tpope/vim-fugitive'
-Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
 Plug 'junegunn/fzf'
 call plug#end()
 
 set completeopt=menu,menuone,noselect
-
-set number relativenumber hidden nowrap nohlsearch
-au BufNewFile,BufRead,BufReadPost *.cpp,*.hpp set colorcolumn=80
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -66,30 +60,47 @@ cmp.setup({
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
-    sources = {
+    sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-
-      -- For vsnip user.
-      { name = 'vsnip' },
+      { name = 'vsnip' }, -- For vsnip users.
+    }, {
       { name = 'buffer' },
-    }
+    })
   })
 
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
 -- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'html', 'java_language_server', 'pyright', 'rust_analyzer', 'yamlls' }
-local cmp_nvim = require('cmp_nvim_lsp')
-local cmp_cap = cmp_nvim.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
     },
-    capabilities = cmp_cap 
+    capabilities = capabilities 
   }
 end
 EOF
 
 tnoremap <c-w> <c-\><c-n><c-w>
+tnoremap <c-n> <c-\><c-n>
+set number relativenumber hidden nowrap nohlsearch tabstop=4 shiftwidth=4 expandtab scrolloff=4
+au BufNewFile,BufRead,BufReadPost *.cpp,*.hpp *.sh set colorcolumn=80
