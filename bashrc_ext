@@ -10,20 +10,23 @@ function mkcd {
     cd $1
 }
 
-function ebash {
-    nvim ~/bash_ext
+function ebrc {
+    lvim ~/bashrc_ext
     source ~/.bashrc
 }
 
 function evim {
-    nvim ~/.config/nvim/init.vim
+    lvim ~/.config/lvim/config.lua
 }
 
-alias e=nvim
+alias e=lvim
 
-export VISUAL=nvim
-export EDITOR=nvim
+export VISUAL=lvim
+export EDITOR=lvim
 
 export PATH="$PATH:$(go env GOPATH)/bin"
+
+set -o vi
+bind '"ht":vi-movement-mode'
 
 [[ ! -z $SSH_TTY ]] && neofetch

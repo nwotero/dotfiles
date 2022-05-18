@@ -39,9 +39,11 @@ lvim.builtin.telescope.defaults.mappings = {
     ["<C-k>"] = actions.move_selection_previous,
   },
 }
+require('telescope').load_extension('fzf')
+vim.lsp.handlers["textDocument/references"] = require("telescope.builtin").lsp_references
 
 -- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Trouble",
   r = { "<cmd>Trouble lsp_references<cr>", "References" },
@@ -105,6 +107,7 @@ lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 1
+lvim.builtin.nvimtree.setup.actions.open_file.quit_on_open = true
 lvim.builtin.dap.active = true
 
 -- if you don't want all the parsers change this to a table of the ones you want
@@ -143,6 +146,9 @@ lvim.lsp.automatic_servers_installation = true
 -- Additional Plugins
 lvim.plugins = {
   {
+    "rcarriga/nvim-dap-ui",
+  },
+  {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
@@ -174,6 +180,11 @@ lvim.plugins = {
           },
         },
       } end
+  },
+  {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    run = "make",
+    event = "BufRead",
   },
   {
     "nvim-telescope/telescope-project.nvim",
@@ -290,10 +301,6 @@ lvim.plugins = {
   {
     "tpope/vim-surround",
     keys = {"c", "d", "y"}
-    -- make sure to change the value of `timeoutlen` if it's not triggering correctly, see https://github.com/tpope/vim-surround/issues/117
-    -- setup = function()
-      --  vim.o.timeoutlen = 500
-    -- end
   },
 }
 
@@ -347,45 +354,190 @@ lvim.plugins = {
 
 -- DAP config
 local dap = require('dap')
-dap.adapters.lldb = {
-  type = 'executable',
-  command = '/usr/bin/lldb-vscode-14',
-  name = "lldb"
+dap.configurations.lua = {
+  {
+    type = "nlua",
+    request = "attach",
+    name = "Neovim attach",
+    host = function()
+      local value = vim.fn.input "Host [127.0.0.1]: "
+      if value ~= "" then
+        return value
+      end
+      return "127.0.0.1"
+    end,
+    port = function()
+      local val = tonumber(vim.fn.input "Port: ")
+      assert(val, "Please provide a port number")
+      return val
+    end,
+  },
 }
+
+dap.adapters.go = function(callback, _)
+  local stdout = vim.loop.new_pipe(false)
+  local handle
+  local pid_or_err
+  local port = 38697
+  local opts = {
+    stdio = { nil, stdout },
+    args = { "dap", "-l", "127.0.0.1:" .. port },
+    detached = true,
+  }
+  handle, pid_or_err = vim.loop.spawn("dlv", opts, function(code)
+    stdout:close()
+    handle:close()
+    if code ~= 0 then
+      print("dlv exited with code", code)
+    end
+  end)
+  assert(handle, "Error running dlv: " .. tostring(pid_or_err))
+  stdout:read_start(function(err, chunk)
+    assert(not err, err)
+    if chunk then
+      vim.schedule(function()
+        require("dap.repl").append(chunk)
+      end)
+    end
+  end)
+  -- Wait for delve to start
+  vim.defer_fn(function()
+    callback { type = "server", host = "127.0.0.1", port = port }
+  end, 100)
+end
+-- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+dap.configurations.go = {
+  {
+    type = "go",
+    name = "Debug",
+    request = "launch",
+    program = "${file}",
+  },
+  {
+    type = "go",
+    name = "Debug test", -- configuration for debugging test files
+    request = "launch",
+    mode = "test",
+    program = "${file}",
+  },
+  -- works with go.mod packages and sub packages
+  {
+    type = "go",
+    name = "Debug test (go.mod)",
+    request = "launch",
+    mode = "test",
+    program = "./${relativeFileDirname}",
+  },
+}
+
+dap.adapters.codelldb = function(on_adapter)
+  local stdout = vim.loop.new_pipe(false)
+  local stderr = vim.loop.new_pipe(false)
+
+  local cmd = vim.fn.expand "~/" .. ".vscode/extensions/vadimcn.vscode-lldb-1.6.10/adapter/codelldb"
+
+  local handle, pid_or_err
+  local opts = {
+    stdio = { nil, stdout, stderr },
+    detached = true,
+  }
+  handle, pid_or_err = vim.loop.spawn(cmd, opts, function(code)
+    stdout:close()
+    stderr:close()
+    handle:close()
+    if code ~= 0 then
+      print("codelldb exited with code", code)
+    end
+  end)
+  assert(handle, "Error running codelldb: " .. tostring(pid_or_err))
+  stdout:read_start(function(err, chunk)
+    assert(not err, err)
+    if chunk then
+      local port = chunk:match "Listening on port (%d+)"
+      if port then
+        vim.schedule(function()
+          on_adapter {
+            type = "server",
+            host = "127.0.0.1",
+            port = port,
+          }
+        end)
+      else
+        vim.schedule(function()
+          require("dap.repl").append(chunk)
+        end)
+      end
+    end
+  end)
+  stderr:read_start(function(err, chunk)
+    assert(not err, err)
+    if chunk then
+      vim.schedule(function()
+        require("dap.repl").append(chunk)
+      end)
+    end
+  end)
+end
+
 dap.configurations.cpp = {
   {
-    name = "Launch",
-    type = "lldb",
+    name = "Launch file",
+    type = "codelldb",
     request = "launch",
     program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
     end,
-    cwd = '${workspaceFolder}',
-    stopOnEntry = false,
-    args = {},
-
-    -- 💀
-    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
-    --
-    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
-    --
-    -- Otherwise you might get the following error:
-    --
-    --    Error on launch: Failed to attach to the target process
-    --
-    -- But you should be aware of the implications:
-    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
-
-    runInTerminal = false,
-
-    -- 💀
-    -- If you use `runInTerminal = true` and resize the terminal window,
-    -- lldb-vscode will receive a `SIGWINCH` signal which can cause problems
-    -- To avoid that uncomment the following option
-    -- See https://github.com/mfussenegger/nvim-dap/issues/236#issuecomment-1066306073
-    postRunCommands = {'process handle -p true -s false -n false SIGWINCH'}
+    cwd = "${workspaceFolder}",
+    stopOnEntry = true,
   },
 }
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
+dap.configurations.python = dap.configurations.python or {}
+table.insert(dap.configurations.python, {
+  type = "python",
+  request = "launch",
+  name = "launch with options",
+  program = "${file}",
+  python = function() end,
+  pythonPath = function()
+    local path
+    for _, server in pairs(vim.lsp.buf_get_clients()) do
+      if server.name == "pyright" or server.name == "pylance" then
+        path = vim.tbl_get(server, "config", "settings", "python", "pythonPath")
+        break
+      end
+    end
+    path = vim.fn.input("Python path: ", path or "", "file")
+    return path ~= "" and vim.fn.expand(path) or nil
+  end,
+  args = function()
+    local args = {}
+    local i = 1
+    while true do
+      local arg = vim.fn.input("Argument [" .. i .. "]: ")
+      if arg == "" then
+        break
+      end
+      args[i] = arg
+      i = i + 1
+    end
+    return args
+  end,
+  justMyCode = function()
+    local yn = vim.fn.input "justMyCode? [y/n]: "
+    if yn == "y" then
+      return true
+    end
+    return false
+  end,
+  stopOnEntry = function()
+    local yn = vim.fn.input "stopOnEntry? [y/n]: "
+    if yn == "y" then
+      return true
+    end
+    return false
+  end,
+  console = "integratedTerminal",
+})
