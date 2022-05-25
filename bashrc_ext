@@ -1,12 +1,13 @@
 #!/bin/bash
 
+# === Functions ===
 function cd {
     builtin cd $1
     ls
 }
 
 function mkcd {
-    mkdir $1
+    mkdir -p $1
     cd $1
 }
 
@@ -19,14 +20,34 @@ function evim {
     lvim ~/.config/lvim/config.lua
 }
 
+# === Aliases ===
+
+alias bat=batcat
 alias e=lvim
+alias g=gitui
+alias m=make
+alias o=xdg-open
+alias plz='sudo $(history -p !!)'
+alias r=trash
+alias rm=trash
+alias sc=sc-im
+alias vim='lvim'
 
-export VISUAL=lvim
+# === Exports ===
 export EDITOR=lvim
-
 export PATH="$PATH:$(go env GOPATH)/bin"
+export VISUAL=lvim
 
+# === Variables ===
+LS_COLORS+=':ow=01;33'
+
+# === Keybindngs ===
 set -o vi
 bind '"ht":vi-movement-mode'
 
+# === Environment === 
+. "$HOME/.cargo/env"
+source /usr/share/doc/fzf/examples/key-bindings.bash
+
 [[ ! -z $SSH_TTY ]] && neofetch
+[[ -f $HOME/bashrc_ext_local ]] && source $HOME/bashrc_ext_local

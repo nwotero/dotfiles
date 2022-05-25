@@ -12,6 +12,10 @@ lvim.log.level = "warn"
 lvim.format_on_save = false
 lvim.colorscheme = "onedarker"
 lvim.line_wrap_cursor_movement = false
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.cursorline = true
+vim.opt.wrap = false
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -213,7 +217,7 @@ lvim.plugins = {
     config = function()
       local dial = require "dial"
       vim.cmd [[
-      nmap <C-a> <Plug>(dial-increment)
+        nmap <C-a> <Plug>(dial-increment)
         nmap <C-x> <Plug>(dial-decrement)
         vmap <C-a> <Plug>(dial-increment)
         vmap <C-x> <Plug>(dial-decrement)
@@ -541,3 +545,4 @@ table.insert(dap.configurations.python, {
   end,
   console = "integratedTerminal",
 })
+
