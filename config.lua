@@ -39,7 +39,6 @@ lvim.builtin.telescope.defaults.mappings = {
     ["<C-k>"] = actions.move_selection_previous,
   },
 }
-require('telescope').load_extension('fzf')
 vim.lsp.handlers["textDocument/references"] = require("telescope.builtin").lsp_references
 
 -- Use which-key to add extra bindings with the leader-key prefix
@@ -182,11 +181,6 @@ lvim.plugins = {
       } end
   },
   {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    run = "make",
-    event = "BufRead",
-  },
-  {
     "nvim-telescope/telescope-project.nvim",
     event = "BufWinEnter",
     setup = function()
@@ -302,6 +296,9 @@ lvim.plugins = {
     "tpope/vim-surround",
     keys = {"c", "d", "y"}
   },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects"
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
@@ -541,3 +538,30 @@ table.insert(dap.configurations.python, {
   end,
   console = "integratedTerminal",
 })
+
+-- Treesitter Text Objects
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["aa"] = "@block.outer",
+        ["ia"] = "@block.inner",
+        ["ai"] = "@conditional.outer",
+        ["ii"] = "@conditional.inner",
+        ["al"] = "@loop.outer",
+        ["il"] = "@loop.inner",
+        ["aS"] = "@statement.inner",
+      },
+    },
+  },
+}
