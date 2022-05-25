@@ -43,7 +43,6 @@ lvim.builtin.telescope.defaults.mappings = {
     ["<C-k>"] = actions.move_selection_previous,
   },
 }
-require('telescope').load_extension('fzf')
 vim.lsp.handlers["textDocument/references"] = require("telescope.builtin").lsp_references
 
 -- Use which-key to add extra bindings with the leader-key prefix
@@ -57,46 +56,46 @@ lvim.builtin.which_key.mappings["t"] = {
   l = { "<cmd>Trouble loclist<cr>", "LocationList" },
   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Wordspace Diagnostics" },
 }
-lvim.builtin.which_key.mappings["S"]= {
+lvim.builtin.which_key.mappings["S"] = {
   name = "Session",
   c = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
   l = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" },
   Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
 }
-lvim.builtin.which_key.mappings["d"]= {
+lvim.builtin.which_key.mappings["d"] = {
   name = "Debug",
   s = {
     name = "Step",
-		c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
-		v = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
-		i = { "<cmd>lua require('dap').step_into()<CR>", "Step Into" },
-		o = { "<cmd>lua require('dap').step_out()<CR>", "Step Out" },
-	},
+    c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
+    v = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
+    i = { "<cmd>lua require('dap').step_into()<CR>", "Step Into" },
+    o = { "<cmd>lua require('dap').step_out()<CR>", "Step Out" },
+  },
   h = {
     name = "Hover",
     h = { "<cmd>lua require('dap.ui.variables').hover()<CR>", "Hover" },
-		v = { "<cmd>lua require('dap.ui.variables').visual_hover()<CR>", "Visual Hover" },
-	},
+    v = { "<cmd>lua require('dap.ui.variables').visual_hover()<CR>", "Visual Hover" },
+  },
   u = {
     name = "UI",
-		h = { "<cmd>lua require('dap.ui.widgets').hover()<CR>", "Hover" },
-		f = { "<cmd>lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>", "Float" },
-	},
+    h = { "<cmd>lua require('dap.ui.widgets').hover()<CR>", "Hover" },
+    f = { "<cmd>lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>", "Float" },
+  },
   r = {
-	  name = "Repl",
+    name = "Repl",
     o = { "<cmd>lua require('dap').repl.open()<CR>", "Open" },
     l = { "<cmd>lua require('dap').repl.run_last()<CR>", "Run Last" },
-	},
+  },
   b = {
-	  name = "Breakpoints",
-		c = {
-		  "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-				"Breakpoint Condition",
-		},
+    name = "Breakpoints",
+    c = {
+      "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+      "Breakpoint Condition",
+    },
     m = {
-		  "<cmd>lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>",
-				"Log Point Message",
-		},
+      "<cmd>lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>",
+      "Log Point Message",
+    },
     t = { "<cmd>lua require('dap').toggle_breakpoint()<CR>", "Toggle" },
   },
   c = { "<cmd>lua require('dap').scopes()<CR>", "Scopes" },
@@ -168,7 +167,7 @@ lvim.plugins = {
   {
     "romgrk/nvim-treesitter-context",
     config = function()
-      require("treesitter-context").setup{
+      require("treesitter-context").setup {
         enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
         throttle = true, -- Throttles plugin updates (may improve performance)
         max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
@@ -183,12 +182,8 @@ lvim.plugins = {
             'method',
           },
         },
-      } end
-  },
-  {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    run = "make",
-    event = "BufRead",
+      }
+    end
   },
   {
     "nvim-telescope/telescope-project.nvim",
@@ -245,8 +240,8 @@ lvim.plugins = {
     setup = function()
       vim.g.indentLine_enabled = 1
       vim.g.indent_blankline_char = "▏"
-      vim.g.indent_blankline_filetype_exclude = {"help", "terminal", "dashboard"}
-      vim.g.indent_blankline_buftype_exclude = {"terminal"}
+      vim.g.indent_blankline_filetype_exclude = { "help", "terminal", "dashboard" }
+      vim.g.indent_blankline_buftype_exclude = { "terminal" }
       vim.g.indent_blankline_show_trailing_blankline_indent = false
       vim.g.indent_blankline_show_first_indent_level = false
     end
@@ -255,43 +250,43 @@ lvim.plugins = {
     "karb94/neoscroll.nvim",
     event = "WinScrolled",
     config = function()
-    require('neoscroll').setup({
-          -- All these keys will be mapped to their corresponding default scrolling animation
-          mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
-          '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
-          hide_cursor = true,          -- Hide cursor while scrolling
-          stop_eof = true,             -- Stop at <EOF> when scrolling downwards
-          use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
-          respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
-          cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-          easing_function = nil,        -- Default easing function
-          pre_hook = nil,              -- Function to run before the scrolling animation starts
-          post_hook = nil,              -- Function to run after the scrolling animation ends
-          })
+      require('neoscroll').setup({
+        -- All these keys will be mapped to their corresponding default scrolling animation
+        mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>',
+          '<C-y>', '<C-e>', 'zt', 'zz', 'zb' },
+        hide_cursor = true, -- Hide cursor while scrolling
+        stop_eof = true, -- Stop at <EOF> when scrolling downwards
+        use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
+        respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+        easing_function = nil, -- Default easing function
+        pre_hook = nil, -- Function to run before the scrolling animation starts
+        post_hook = nil, -- Function to run after the scrolling animation ends
+      })
     end
   },
-	{
-		"ethanholz/nvim-lastplace",
-		event = "BufRead",
-		config = function()
-			require("nvim-lastplace").setup({
-				lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
-				lastplace_ignore_filetype = {
-					"gitcommit", "gitrebase", "svn", "hgcommit",
-				},
-				lastplace_open_folds = true,
-			})
-		end,
-	},
+  {
+    "ethanholz/nvim-lastplace",
+    event = "BufRead",
+    config = function()
+      require("nvim-lastplace").setup({
+        lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
+        lastplace_ignore_filetype = {
+          "gitcommit", "gitrebase", "svn", "hgcommit",
+        },
+        lastplace_open_folds = true,
+      })
+    end,
+  },
   {
     "folke/persistence.nvim",
-      event = "BufReadPre", -- this will only start session saving when an actual file was opened
-      module = "persistence",
-      config = function()
-        require("persistence").setup {
-          dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
-          options = { "buffers", "curdir", "tabpages", "winsize" },
-        }
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    module = "persistence",
+    config = function()
+      require("persistence").setup {
+        dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
+        options = { "buffers", "curdir", "tabpages", "winsize" },
+      }
     end,
   },
   {
@@ -304,8 +299,11 @@ lvim.plugins = {
   { "tpope/vim-repeat" },
   {
     "tpope/vim-surround",
-    keys = {"c", "d", "y"}
+    keys = { "c", "d", "y" }
   },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects"
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
@@ -546,3 +544,29 @@ table.insert(dap.configurations.python, {
   console = "integratedTerminal",
 })
 
+-- Treesitter Text Objects
+require 'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["aa"] = "@block.outer",
+        ["ia"] = "@block.inner",
+        ["ai"] = "@conditional.outer",
+        ["ii"] = "@conditional.inner",
+        ["al"] = "@loop.outer",
+        ["il"] = "@loop.inner",
+        ["aS"] = "@statement.inner",
+      },
+    },
+  },
+}
