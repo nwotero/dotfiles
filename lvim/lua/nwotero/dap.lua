@@ -3,7 +3,7 @@ lvim.builtin.which_key.mappings["d"]= {
   s = {
     name = "Step",
 		c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
-		v = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
+		j = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
 		i = { "<cmd>lua require('dap').step_into()<CR>", "Step Into" },
 		o = { "<cmd>lua require('dap').step_out()<CR>", "Step Out" },
 	},
@@ -26,7 +26,7 @@ lvim.builtin.which_key.mappings["d"]= {
 	  name = "Breakpoints",
 		c = {
 		  "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-				"Breakpoint Condition",
+				"Conditional Breakpoint",
 		},
     m = {
 		  "<cmd>lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>",
@@ -94,21 +94,21 @@ end
 -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
 dap.configurations.go = {
   {
-      type = "go",
+    type = "go",
     name = "Debug",
     request = "launch",
     program = "${file}",
   },
-    {
-      type = "go",
+  {
+    type = "go",
     name = "Debug test", -- configuration for debugging test files
     request = "launch",
     mode = "test",
     program = "${file}",
   },
-    -- works with go.mod packages and sub packages
-    {
-      type = "go",
+  -- works with go.mod packages and sub packages
+  {
+    type = "go",
     name = "Debug test (go.mod)",
     request = "launch",
     mode = "test",
@@ -230,7 +230,7 @@ dapui.setup({
     },
   },
   windows = { indent = 1 },
-  render = { 
+  render = {
     max_type_length = nil, -- Can be integer or nil.
   }
 })
