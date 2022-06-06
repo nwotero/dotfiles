@@ -57,34 +57,34 @@ lvim.plugins = {
       require "lsp_signature".setup()
     end
   },
-  {
-    "monaqa/dial.nvim",
-    event = "BufRead",
-    config = function()
-      local dial = require "dial"
-      vim.cmd [[
-      nmap <C-a> <Plug>(dial-increment)
-        nmap <C-x> <Plug>(dial-decrement)
-        vmap <C-a> <Plug>(dial-increment)
-        vmap <C-x> <Plug>(dial-decrement)
-        vmap g<C-a> <Plug>(dial-increment-additional)
-        vmap g<C-x> <Plug>(dial-decrement-additional)
-      ]]
+  -- {
+  --   "monaqa/dial.nvim",
+  --   event = "BufRead",
+  --   config = function()
+  --     local dial = require "dial"
+  --     vim.cmd [[
+  --     nmap <C-a> <Plug>(dial-increment)
+  --       nmap <C-x> <Plug>(dial-decrement)
+  --       vmap <C-a> <Plug>(dial-increment)
+  --       vmap <C-x> <Plug>(dial-decrement)
+  --       vmap g<C-a> <Plug>(dial-increment-additional)
+  --       vmap g<C-x> <Plug>(dial-decrement-additional)
+  --     ]]
 
-      dial.augends["custom#boolean"] = dial.common.enum_cyclic {
-        name = "boolean",
-        strlist = { "true", "false" },
-      }
-      table.insert(dial.config.searchlist.normal, "custom#boolean")
+  --     dial.augends["custom#boolean"] = dial.common.enum_cyclic {
+  --       name = "boolean",
+  --       strlist = { "true", "false" },
+  --     }
+  --     table.insert(dial.config.searchlist.normal, "custom#boolean")
 
-      -- For Languages which prefer True/False, e.g. python.
-      dial.augends["custom#Boolean"] = dial.common.enum_cyclic {
-        name = "Boolean",
-        strlist = { "True", "False" },
-      }
-      table.insert(dial.config.searchlist.normal, "custom#Boolean")
-    end,
-  },
+  --     -- For Languages which prefer True/False, e.g. python.
+  --     dial.augends["custom#Boolean"] = dial.common.enum_cyclic {
+  --       name = "Boolean",
+  --       strlist = { "True", "False" },
+  --     }
+  --     table.insert(dial.config.searchlist.normal, "custom#Boolean")
+  --   end,
+  -- },
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufRead",
@@ -157,5 +157,11 @@ lvim.plugins = {
   },
   {
     "stevearc/dressing.nvim"
+  },
+  {
+    "mfussenegger/nvim-dap"
+  },
+  {
+    "Pocco81/dap-buddy.nvim"
   }
 }
