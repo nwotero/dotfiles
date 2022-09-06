@@ -36,7 +36,7 @@ alias vim='lvim'
 
 # === Exports ===
 export EDITOR=lvim
-export PATH="$PATH:$(go env GOPATH)/bin"
+export PATH="$PATH:$(go env GOPATH)/bin:/usr/local/texlive/2022/bin/x86_64-linux"
 export VISUAL=lvim
 
 # === Variables ===

@@ -1,45 +1,45 @@
-lvim.builtin.which_key.mappings["d"]= {
-  name = "Debug",
-  s = {
-    name = "Step",
-		c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
-		j = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
-		i = { "<cmd>lua require('dap').step_into()<CR>", "Step Into" },
-		o = { "<cmd>lua require('dap').step_out()<CR>", "Step Out" },
-	},
-  h = {
-    name = "Hover",
-    h = { "<cmd>lua require('dap.ui.variables').hover()<CR>", "Hover" },
-		v = { "<cmd>lua require('dap.ui.variables').visual_hover()<CR>", "Visual Hover" },
-	},
-  u = {
-    name = "UI",
-		h = { "<cmd>lua require('dap.ui.widgets').hover()<CR>", "Hover" },
-		f = { "<cmd>lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>", "Float" },
-	},
-  r = {
-	  name = "Repl",
-    o = { "<cmd>lua require('dap').repl.open()<CR>", "Open" },
-    l = { "<cmd>lua require('dap').repl.run_last()<CR>", "Run Last" },
-	},
-  b = {
-	  name = "Breakpoints",
-		c = {
-		  "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-				"Conditional Breakpoint",
-		},
-    m = {
-		  "<cmd>lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>",
-				"Log Point Message",
-		},
-    t = { "<cmd>lua require('dap').toggle_breakpoint()<CR>", "Toggle" },
-  },
-  c = { "<cmd>lua require('dap').scopes()<CR>", "Scopes" },
-  i = { "<cmd>lua require('dap').toggle()<CR>", "Toggle" },
-}
+-- lvim.builtin.which_key.mappings["d"] = {
+--   name = "Debug",
+--   s = {
+--     name = "Step",
+--     c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
+--     j = { "<cmd>lua require('dap').step_over()<CR>", "Step Over" },
+--     i = { "<cmd>lua require('dap').step_into()<CR>", "Step Into" },
+--     o = { "<cmd>lua require('dap').step_out()<CR>", "Step Out" },
+--   },
+--   h = {
+--     name = "Hover",
+--     h = { "<cmd>lua require('dap.ui.variables').hover()<CR>", "Hover" },
+--     v = { "<cmd>lua require('dap.ui.variables').visual_hover()<CR>", "Visual Hover" },
+--   },
+--   u = {
+--     name = "UI",
+--     h = { "<cmd>lua require('dap.ui.widgets').hover()<CR>", "Hover" },
+--     f = { "<cmd>lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>", "Float" },
+--   },
+--   r = {
+--     name = "Repl",
+--     o = { "<cmd>lua require('dap').repl.open()<CR>", "Open" },
+--     l = { "<cmd>lua require('dap').repl.run_last()<CR>", "Run Last" },
+--   },
+--   b = {
+--     name = "Breakpoints",
+--     c = {
+--       "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+--       "Conditional Breakpoint",
+--     },
+--     m = {
+--       "<cmd>lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>",
+--       "Log Point Message",
+--     },
+--     t = { "<cmd>lua require('dap').toggle_breakpoint()<CR>", "Toggle" },
+--   },
+--   c = { "<cmd>lua require('dap').scopes()<CR>", "Scopes" },
+--   i = { "<cmd>lua require('dap').toggle()<CR>", "Toggle" },
+-- }
 
 -- DAP config
-local dap = require('dap')
+local dap = require("dap")
 dap.configurations.lua = {
   {
     type = "nlua",
@@ -51,12 +51,12 @@ dap.configurations.lua = {
         return value
       end
       return "127.0.0.1"
-      end,
+    end,
     port = function()
       local val = tonumber(vim.fn.input "Port: ")
       assert(val, "Please provide a port number")
       return val
-      end,
+    end,
   },
 }
 
@@ -154,7 +154,7 @@ table.insert(dap.configurations.python, {
     end
     path = vim.fn.input("Python path: ", path or "", "file")
     return path ~= "" and vim.fn.expand(path) or nil
-    end,
+  end,
   args = function()
     local args = {}
     local i = 1
@@ -167,21 +167,21 @@ table.insert(dap.configurations.python, {
       i = i + 1
     end
     return args
-    end,
+  end,
   justMyCode = function()
     local yn = vim.fn.input "justMyCode? [y/n]: "
     if yn == "y" then
       return true
     end
     return false
-    end,
+  end,
   stopOnEntry = function()
     local yn = vim.fn.input "stopOnEntry? [y/n]: "
     if yn == "y" then
       return true
     end
     return false
-    end,
+  end,
   console = "integratedTerminal",
 })
 
@@ -201,25 +201,25 @@ dapui.setup({
   -- Expand lines larger than the window
   -- Requires >= 0.7
   expand_lines = vim.fn.has("nvim-0.7"),
-  sidebar = {
-    -- You can change the order of elements in the sidebar
-    elements = {
-      -- Provide as ID strings or tables with "id" and "size" keys
-      {
-        id = "scopes",
-        size = 0.25, -- Can be float or integer > 1
+  layouts = {
+    {
+      elements = {
+        'scopes',
+        'breakpoints',
+        'stacks',
+        'watches',
       },
-      { id = "breakpoints", size = 0.25 },
-      { id = "stacks", size = 0.25 },
-      { id = "watches", size = 00.25 },
+      size = 40,
+      position = 'left',
     },
-    size = 40,
-    position = "left", -- Can be "left", "right", "top", "bottom"
-  },
-  tray = {
-    elements = { "repl" },
-    size = 10,
-    position = "bottom", -- Can be "left", "right", "top", "bottom"
+    {
+      elements = {
+        'repl',
+        'console',
+      },
+      size = 10,
+      position = 'bottom',
+    },
   },
   floating = {
     max_height = nil, -- These can be integers or a float between 0 and 1.
