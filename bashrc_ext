@@ -2,7 +2,7 @@
 
 # === Functions ===
 function cd {
-    builtin cd $1
+    builtin cd "$1"
     ls
 }
 

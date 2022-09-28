@@ -4,3 +4,5 @@ lvim.builtin.which_key.mappings["l"]["L"] = {
   end,
   "Toggle LSP Lines"
 }
+-- Disable virtual_text since it's redundant due to lsp_lines.
+lvim.lsp.diagnostics.virtual_text = false
