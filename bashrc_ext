@@ -20,7 +20,20 @@ function evim {
     lvim ~/.config/lvim/config.lua
 }
 
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
 # === Aliases ===
+alias .1="cd .."
+alias .2="cd ../.."
+alias .3="cd ../../.."
+alias .4="cd ../../../.."
+alias .5="cd ../../../../.."
+alias ...=".2"
+alias ....=".3"
+alias .....=".4"
+alias ......=".4"
+
 alias bat=batcat
 alias e=lvim
 alias g=gitui
@@ -38,13 +51,14 @@ alias vim='lvim'
 export EDITOR=lvim
 export PATH="$PATH:$(go env GOPATH)/bin:/usr/local/texlive/2022/bin/x86_64-linux"
 export VISUAL=lvim
+export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
 
 # === Variables ===
 LS_COLORS+=':ow=01;33'
 
 # === Keybindngs ===
 set -o vi
-bind '"ht":vi-movement-mode'
+bind '"jk":vi-movement-mode'
 
 # === Environment === 
 . "$HOME/.cargo/env"
