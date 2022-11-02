@@ -15,6 +15,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "lua",
   "make",
   "markdown",
+  "proto",
   "python",
   "rust",
   "toml",
