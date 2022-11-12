@@ -7,8 +7,8 @@ function cd {
 }
 
 function mkcd {
-    mkdir -p $1
-    cd $1
+    mkdir -p "$1"
+    cd "$1"
 }
 
 function ebrc {
@@ -64,5 +64,5 @@ bind '"jk":vi-movement-mode'
 . "$HOME/.cargo/env"
 source /usr/share/doc/fzf/examples/key-bindings.bash
 
-[[ ! -z $SSH_TTY ]] && neofetch
-[[ -f $HOME/bashrc_ext_local ]] && source $HOME/bashrc_ext_local
+[[ -n $SSH_TTY ]] && neofetch
+[[ -f $HOME/bashrc_ext_local ]] && source "$HOME/bashrc_ext_local"
