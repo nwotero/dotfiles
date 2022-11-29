@@ -152,5 +152,24 @@ lvim.plugins = {
             })
         end
 
+    },
+    {
+        'phaazon/hop.nvim',
+        branch = 'v2', -- optional but strongly recommended
+        config = function()
+            -- you can configure Hop the way you like here; see :h hop-config
+            local hop = require('hop')
+            hop.setup {
+                keys = 'aoeuidhtnspyfgcrjkbmw',
+                uppercase_labels = true,
+            }
+            vim.keymap.set("n", "W", hop.hint_words, {})
+        end
+    },
+    {
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        config = function()
+            require("telescope").load_extension("live_grep_args")
+        end
     }
 }

@@ -33,6 +33,14 @@ lvim.builtin.which_key.mappings["S"] = {
   Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
 }
 
+lvim.builtin.which_key.mappings["g"]["s"] = {
+    "<cmd>Telescope git_status<cr>", "Git Status"
+}
+
+lvim.builtin.which_key.mappings["s"]["t"] = {
+    "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<cr>", "Live Grep"
+}
+
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true

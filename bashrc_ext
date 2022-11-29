@@ -44,8 +44,7 @@ alias plz='sudo $(history -p !!)'
 alias r=trash
 alias rm=trash
 alias sc=sc-im
-alias vi='lvim'
-alias vim='lvim'
+alias j=joshuto
 
 # === Exports ===
 export EDITOR=lvim
