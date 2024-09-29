@@ -3,6 +3,7 @@
 dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 nvim_dir=$HOME/.config/nvim/
 lvim_dir=$HOME/.config/lvim/
+keyd_dir=/etc/keyd
 
 # Install dependencies
 bash  $dir/install_deps.bash
@@ -18,4 +19,5 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 [[ -f $lvim_dir/config.lua ]] && mv $lvim_dir/config.lua $lvim_dir/_config.lua
 [[ -e $lvim_dir/config.lua ]] || ln -s $dir/lvim/config.lua $lvim_dir/config.lua
 [[ -e $lvim_dir/lua ]] || ln -s $dir/lvim/lua $lvim_dir/lua
-
+[[ -e $keyd_dir ]] || sudo mkdir $keyd_dir
+[[ -e $keyd_dir/default.conf ]] || sudo ln -s $dir/keyd.conf $keyd_dir/default.conf
