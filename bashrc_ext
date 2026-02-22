@@ -2,26 +2,26 @@
 
 # === Functions ===
 function cd {
-    builtin cd "$1"
-    ls
+  builtin cd "$1"
+  ls
 }
 
 function mkcd {
-    mkdir -p "$1"
-    cd "$1"
+  mkdir -p "$1"
+  cd "$1"
 }
 
 function ebrc {
-    lvim ~/bashrc_ext
-    source ~/.bashrc
+  lvim ~/bashrc_ext
+  source ~/.bashrc
 }
 
 function evim {
-    lvim ~/.config/lvim/config.lua
+  lvim ~/.config/lvim/config.lua
 }
 
 parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+  git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 # === Aliases ===
 alias .1="cd .."
@@ -45,6 +45,7 @@ alias r=trash
 alias rm=trash
 alias sc=sc-im
 alias j=joshuto
+alias kvim='NVIM_APPNAME="kvim" nvim'
 
 # === Exports ===
 export EDITOR=lvim
@@ -59,7 +60,7 @@ LS_COLORS+=':ow=01;33'
 set -o vi
 bind '"jk":vi-movement-mode'
 
-# === Environment === 
+# === Environment ===
 . "$HOME/.cargo/env"
 source /usr/share/doc/fzf/examples/key-bindings.bash
 
